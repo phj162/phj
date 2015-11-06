@@ -1,0 +1,34 @@
+<script type="text/javascript">
+    RED.nodes.registerType('zmq-client', {
+        category: 'iot',
+        color: '#ffffff',
+        defaults: {
+            name: {value: ""},
+            host: {value:"localhost", required:true},
+            port: {value:"", required:true, validate:RED.validators.number()}
+        },
+        inputs: 0,
+        outputs: 1,
+        icons: 'file.png',
+        label: function () {
+            return this.name || 'zmq-client';
+        }
+    });
+
+
+</script>
+
+<script type="text/x-red" data-template-name="zmq-client">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-host"><i class="icon-bookmark"></i> Host</label>
+        <input type="text" id="node-input-host">
+    </div>
+    <div class="form-row">
+        <label for="node-input-port"><i class="icon-bookmark"></i> Port</label>
+        <input type="text" id="node-input-port">
+    </div>
+</script>
