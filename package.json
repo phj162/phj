@@ -1,0 +1,19 @@
+{
+  "name"         : "node-red-sktest",
+  "version"      : "0.0.1",
+  "description"  : "A SKT smart Gateway node for node-red",
+  "repository" :
+  { "type" : "git"
+  , "url" : "https://github.com/phj162/phj.git"
+  }
+  "dependencies": {
+  },
+  "keywords": [ "node-red","smart-gateway","skt" ],
+  "node-red"     : {
+    "nodes": {
+      "skt": "test/phj-sentiment.js",
+      "zmq-server" : "zmq-server.js",
+      "zmq-cliet" : "zmq-client.js"
+    }
+  }
+}
