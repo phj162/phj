@@ -1,0 +1,117 @@
+<script type="text/javascript">
+    var tmpLoadRules = null;
+    RED.nodes.registerType('rules', {
+        category: 'data processing',
+        color: '#ccc',
+        defaults: {
+            name: {value: ''},
+            fileName: {value: ''},
+            ruleId: {value: ''},
+            outputs: {value: 1}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'alert.png',
+        label: function () {
+            return this.name || 'rules';
+        },
+        oneditprepare: function () {
+            var node = this;
+
+            $('#node-input-rule-file').val(node.fileName);
+            if ($.trim($('#node-input-rule-file').val()) == '') {
+                return false;
+            }
+
+            $.ajax({
+                url: 'rules/' + $.trim($('#node-input-rule-file').val()),
+                type: 'POST',
+                success: function (r) {
+                    if (r.result) {
+                        tmpLoadRules = r.value;
+                        var rHtml = '<option value="">== Rules ==</option>';
+                        $.each(tmpLoadRules, function (i, v) {
+                            rHtml += '<option value="' + v.id + '">' + v.name + '</option>';
+                        });
+
+                        $('#node-input-rule-select').html(rHtml);
+                        $('#node-input-rule-select').val(node.ruleId);
+                    }
+                }
+            });
+        },
+        oneditsave: function () {
+            var node = this;
+            node.fileName = $('#node-input-rule-file').val();
+            node.ruleId = $('#node-input-rule-select').val();
+
+            if (node.ruleId != '') {
+                $.each(tmpLoadRules, function (i, v) {
+                    if (v.id == node.ruleId) {
+                        node.name = v.name;
+                        node.outputs = v.outputs.length;
+                    }
+                });
+            }
+        }
+    });
+
+    $(function () {
+        $(document).on('click', '#node-input-rule-file-search', ruleFileSearch);
+    });
+
+    function ruleFileSearch() {
+        if ($.trim($('#node-input-rule-file').val()) == '') {
+            alert('File Name을 입력해 주세요.');
+            return false;
+        }
+
+        $.ajax({
+            url: 'rules/' + $.trim($('#node-input-rule-file').val()),
+            type: 'POST',
+            success: function (r) {
+                alert(r.content);
+                if (r.result) {
+                    tmpLoadRules = r.value;
+                    var rHtml = '<option value="">== Rules ==</option>';
+                    $.each(tmpLoadRules, function (i, v) {
+                        rHtml += '<option value="' + v.id + '">' + v.name + '</option>';
+                    });
+
+                    $('#node-input-rule-select').html(rHtml);
+                }
+            }
+        });
+    }
+</script>
+
+<script type="text/x-red" data-template-name="rules">
+    <div class="rules">
+        <div class="form-row">
+            <label for="node-input-rule-file"><i class="fa fa-tag"></i> File Name</label>
+            <input type="text" id="node-input-rule-file" />
+            <a id="node-input-rule-file-search" class="editor-button"><i class="fa fa-pencil"></i></a>
+        </div>
+        <div class="form-row">
+            <label for="node-input-rule-select"><i class="fa fa-tag"></i> Rules</label>
+            <select id="node-input-rule-select">
+                <option value="">== Rules ==</option>
+            </select>
+        </div>
+    </div>
+</script>
+
+<style>
+    .rules .form-row label {
+        width: 82px;
+    }
+
+    .rules .form-row input {
+        width: 68%;
+    }
+
+    .rules .form-row select {
+        width: 80%;
+    }
+
+</style>

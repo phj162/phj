@@ -1,0 +1,214 @@
+<script type="text/javascript">
+    RED.nodes.registerType('wsn-module', {
+        category: 'T_SmartGateway',
+        color: '#cfcfcf',
+        defaults: {
+            wsnName: {value: "", required:true},
+            name: {value: "", required:true},
+            connDevice: {value: "", required:true},
+//            connParam: {value: "", required:true},
+            baudRate:{value: 57600, required:true},
+            dataBits:{value: 8, required:true},
+            parity:{value: "n", required:true},
+            macTech: {value: "", required:true},
+            phyTech: {value: "", required:true},
+            trafficType: {value: "", required:true},
+            used: {value: "", required:true}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'bridge-dash.png',
+        paletteLabel: 'WSN Module',
+        label: function () {
+            return this.wsnName || 'wsn-module';
+        },
+        oneditprepare: function() {
+            var node = this;
+
+            var selectField = $("#node-input-wsnListMenu");
+            selectField.change(function(optionField){
+                var moduleData = $( "#node-input-wsnListMenu option:selected").data();
+
+                if(moduleData != null && moduleData.idx != null){
+                    $("#node-input-wsnName").val(moduleData.wsnName);
+                    $("#node-input-name").val(moduleData.name);
+                    $("#node-input-connDevice").val(moduleData.connDevice);
+//                    $("#node-input-connParam").val(moduleData.connParam);
+                    $("#node-input-baudRate").val(moduleData.baudRate);
+                    $("#node-input-dataBits").val(moduleData.dataBits);
+                    $("#node-input-parity").val(moduleData.parity);
+                    $("#node-input-macTech").val(moduleData.macTech);
+                    $("#node-input-phyTech").val(moduleData.phyTech);
+                    $("#node-input-trafficType").val(moduleData.trafficType);
+                    $("#node-input-used").val(moduleData.used);
+
+
+
+                } else {
+                    $("#node-input-wsnName").val("");
+                    $("#node-input-name").val("");
+                    $("#node-input-connDevice").val("");
+//                    $("#node-input-connParam").val("");
+                    $("#node-input-baudRate").val(57600);
+                    $("#node-input-dataBits").val(8);
+                    $("#node-input-parity").val("n");
+                    $("#node-input-macTech").val("");
+                    $("#node-input-phyTech").val("");
+                    $("#node-input-trafficType").val("");
+                    $("#node-input-used").val("");
+
+
+                }
+
+            });
+
+//            function selectConnSetting(){
+//                $("#node-input-connParam").val($("#node-input-baudRate").val()+","+$("#node-input-dataBits").val()+","+$("#node-input-parity").val());
+//            }
+//
+//            $("#node-input-baudRate").change(selectConnSetting);
+//            $("#node-input-dataBits").change(selectConnSetting);
+//            $("#node-input-parity").change(selectConnSetting);
+
+            var tmpNodeInfo = RED.nodes.node(node.id);
+
+            RED.nodes.eachLink(function (link) {
+                if (link.target.z == tmpNodeInfo.z && link.target.id == tmpNodeInfo.id) {
+
+                    if(link.source.type === 'tsg-lora'){
+                        console.log("read module list");
+                        $.getJSON('tsg-lora/moduleList/' + link.source.id, function (resData) {
+                            if (resData != null) {
+                                console.dir(resData);
+
+
+
+                                for (var d in resData) {
+                                    var optionField = $("<option></option>").val(resData[d].wsnName).text(resData[d].wsnName);
+                                    if(resData[d].wsnName == node.wsnName){
+                                        optionField.prop('selected', true);
+                                    }
+                                    optionField.data(resData[d]);
+                                    selectField.append(optionField);
+
+                                }
+
+
+
+                            }
+                        });
+
+                    }
+                }
+            });
+
+
+        },
+        oneditsave: function() {
+
+        },
+        onpaletteadd: function() {
+
+        },
+        onpaletteremove: function() {
+        }
+    });
+
+
+</script>
+
+<script type="text/x-red" data-template-name="wsn-module">
+    <div class="form-row">
+        <label for="node-input-wsnListMenu"><i class="icon-tag"></i> WSN List</label>
+        <select id="node-input-wsnListMenu" style="width:50%;">
+            <option value=''>Select WSN Module</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-wsnName"><i class="icon-tag"></i> WSN Name</label>
+        <input type="text" id="node-input-wsnName" placeholder="WSN Name"/>
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name"/>
+    </div>
+    <div class="form-row">
+        <label for="node-input-connDevice"><i class="icon-tag"></i> Port</label>
+        <input type="text" id="node-input-connDevice" placeholder="Port"/>
+    </div>
+    <!--<div class="form-row">-->
+        <!--<label for="node-input-connParam"><i class="icon-tag"></i> Param</label>-->
+        <!--<input type="text" id="node-input-connParam" placeholder="Param"/>-->
+    <!--</div>-->
+    <div class="form-row">
+        <table><tr>
+            <td width="102px"><i class="fa fa-wrench"></i> Settings</td>
+            <td width="100px">Baud Rate</td>
+            <td width="80px">Data Bits</td>
+            <td width="80px">Parity</td>
+        </tr>
+        <tr>
+        <td>&nbsp;</td>
+        <td>
+        <select type="text" id="node-input-baudRate" style="width: 100px;">
+            <option value="115200">115200</option>
+            <option value="57600">57600</option>
+            <option value="38400">38400</option>
+            <option value="19200">19200</option>
+            <option value="9600">9600</option>
+            <option value="4800">4800</option>
+            <option value="2400">2400</option>
+            <option value="1800">1800</option>
+            <option value="1200">1200</option>
+            <option value="600">600</option>
+            <option value="300">300</option>
+            <option value="200">200</option>
+            <option value="150">150</option>
+            <option value="134">134</option>
+            <option value="110">110</option>
+            <option value="75">75</option>
+            <option value="50">50</option>
+        </select>
+        </td><td>
+        <select type="text" id="node-input-dataBits" style="width: 80px;">
+            <option value="8">8</option>
+            <option value="7">7</option>
+            <option value="6">6</option>
+            <option value="5">5</option>
+        </select>
+        </td><td>
+        <select type="text" id="node-input-parity" style="width: 80px;">
+            <option value="n">None</option>
+            <option value="e">Even</option>
+            <option value="m">Mark</option>
+            <option value="o">Odd</option>
+            <option value="s">Space</option>
+        </select>
+        </td>
+        </tr></table>
+    </div>
+    <div class="form-row">
+        <label for="node-input-macTech"><i class="icon-tag"></i> Mac Tech</label>
+        <input type="text" id="node-input-macTech" placeholder="Mac Tech"/>
+    </div>
+    <div class="form-row">
+        <label for="node-input-phyTech"><i class="icon-tag"></i> Phy Tech</label>
+        <input type="text" id="node-input-phyTech" placeholder="Phy Tech"/>
+    </div>
+    <div class="form-row">
+        <label for="node-input-trafficType"><i class="icon-tag"></i> Traffic</label>
+        <select type="text" id="node-input-trafficType" style="width: 160px;">
+            <option value="TO">Tx Only</option>
+            <option value="RO">Rx Only</option>
+            <option value="TR">Tx,Rx Both</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-used"><i class="icon-tag"></i> Used</label>
+        <select type="text" id="node-input-used" style="width: 80px;">
+            <option value="Y">Y</option>
+            <option value="N">N</option>
+        </select>
+    </div>
+</script>
+

@@ -1,0 +1,35 @@
+<script type="text/javascript">
+    RED.nodes.registerType('ml-nmf', {
+        category: 'machineLeaning',
+        color: '#cfcfcf',
+        defaults: {
+            name: {value: ""},
+            features : {value:"3"},
+            epochs : {value:"100"}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'file.png',
+        label: function () {
+            return this.name || 'ml-nmf';
+        }
+    });
+
+</script>
+
+<script type="text/x-red" data-template-name="ml-nmf">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-features"><i class="icon-tag"></i> features </label>
+        <input type="text" id="node-input-features">
+    </div>
+    <div class="form-row">
+        <label for="node-input-epochs"><i class="icon-tag"></i> epochs </label>
+        <input type="text" id="node-input-epochs">
+    </div>
+
+</script>

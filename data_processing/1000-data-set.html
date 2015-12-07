@@ -1,0 +1,32 @@
+<script type="text/javascript">
+    RED.nodes.registerType('data-set', {
+        category: 'input',
+        color: '#ccc',
+        defaults: {
+            name: {value: ''}
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: 'alert.png',
+        label: function () {
+            return this.name || 'data-set';
+        },
+        button: {
+            onclick: function () {
+                $.ajax({
+                    url: 'dataSet/' + this.id,
+                    type: 'POST',
+                    success: function (r) {
+                        window.console.log(r);
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="data-set">
+    <div class="form-row">
+        <div id="node-prop-content"></div>
+    </div>
+</script>

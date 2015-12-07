@@ -1,0 +1,90 @@
+<script type="text/javascript">
+
+
+    RED.nodes.registerType('tsg-lora', {
+        category: 'T_SmartGateway',
+        color: '#cfcfcf',
+        defaults: {
+            appId: {value: ""},
+            name: {value: ""},
+            interval: {value:"1000", required:true, validate:RED.validators.number()},
+            zmqBroker: {type:"zmq-broker", required:true}
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: 'bridge.png',
+        paletteLabel: 'LoRa Conn',
+        label: function () {
+            return this.name || 'LoRa Conn';
+        },
+        oneditprepare: function() {
+            var node = this;
+
+
+            if(node.appId == null || node.appId === '' ) {
+                $.getJSON('tsg-lora/appId/' + this.id, function (resData) {
+                    if (resData != null) {
+                        $('#node-label-appId').text(resData.appId);
+                    }
+                });
+            }
+//            $('#node-input-appId').val(node.appId);
+//
+//            $("#node-input-clear-appId").click(function() {
+//                $('#node-input-appId').val("");
+//            });
+
+
+
+
+
+        },
+        oneditsave: function() {
+            var node = this;
+
+        },
+        onpaletteadd: function() {
+
+//            var node = this;
+//
+//            this.handleMessage = function(t,o){
+//                node.defaults.appId.value = o.appId;
+//
+//            }
+//
+//            RED.comms.subscribe("tsg-lora",this.handleMessage);
+        },
+        onpaletteremove: function() {
+//            RED.comms.unsubscribe("tsg-lora",this.handleMessage);
+        }
+    });
+
+
+</script>
+
+<script type="text/x-red" data-template-name="tsg-lora">
+    <div class="form-row">
+        <label><i class="fa fa-globe"></i> <span>AppID</span></label>
+        <label><span id="node-label-appId">NONE</span></label>
+        <!--<input type="text" id="node-input-appId" readonly style="width:50%">-->
+        <!--<a href="#" class="editor-button" id="node-input-clear-appId"><i class="fa fa-minus"></i> Clear</a>-->
+    </div>
+    <div class="form-row">
+        <label for="node-input-zmqBroker"><i class="fa fa-globe"></i> <span>Server</span></label>
+        <input type="text" id="node-input-zmqBroker">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-host"><i class="icon-bookmark"></i> Interval(ms)</label>
+        <input type="text" id="node-input-interval">
+    </div>
+</script>
+<script type="text/x-red" data-help-name="tsg-lora">
+   <p>Connect LoRa Module Device</p>
+   <p>Outputs an object called <b>msg</b> containing <b>msg.header</b> and
+   <b>msg.payload</b>. msg.payload is a String.</p>
+   <p>msg.broker.appId, msg.broker.host, msg.broker.port</p>
+</script>

@@ -1,0 +1,28 @@
+[
+    {
+        "id": 1,
+        "name": "Rule1",
+        "property": "payload",
+        "outputs": [
+            {
+                "operator": "lt",
+                "value": 80
+            },
+            {
+                "operator": "lte",
+                "value": 30
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Rule2",
+        "property": "payload",
+        "outputs": [
+            {
+                "operator": "lte",
+                "value": 50
+            }
+        ]
+    }
+]

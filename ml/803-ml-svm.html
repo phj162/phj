@@ -1,0 +1,125 @@
+<script type="text/javascript">
+    RED.nodes.registerType('ml-svm', {
+        category: 'machineLeaning',
+        color: '#cfcfcf',
+        defaults: {
+            name: {value: ""},
+            cvalue : {value:"1.0"},
+            tol : {value:"1e-5"},
+            alphatol : {value:"1e-5"},
+            maxpasses : {value:"20"},
+            kernelType:{value:"gaussian"},
+            sigma:{value:"0.05"},
+            cc : {value:"1"},
+            dd : {value:"5"},
+            func: {value:"\nreturn msg;"}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'file.png',
+        label: function () {
+            return this.name || 'ml-svm';
+        },
+        oneditprepare: function() {
+            $("#kernel-type-select").change(function() {
+                var id = $("#kernel-type-select option:selected").val();
+                $(".kernel-row").hide();
+                $("#kernel-row-"+id).show();
+                $("#node-input-kernelType").val(id);
+
+            });
+
+            $(".kernel-row").hide();
+            var id = this.kernelType;
+            $("#kernel-type-select option").filter(function() {return $(this).val() == id;}).attr('selected',true);
+            $("#kernel-row-"+id).show();
+
+
+
+            this.editor = RED.editor.createEditor({
+                id: 'node-input-editor',
+                mode: 'ace/mode/javascript',
+                value: $("#node-input-func").val()
+            });
+
+
+        },
+        oneditsave: function() {
+
+            $("#node-input-func").val(this.editor.getValue());
+           // $("#node-input-kernelType").val($("#kernel-type-select option:selected").val());
+
+        }
+
+
+    });
+
+
+
+</script>
+
+<style>
+    .kernel-row {
+        padding-left: 0px;
+    }
+</style>
+
+<script type="text/x-red" data-template-name="ml-svm">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-cvalue"><i class="icon-tag"></i> C </label>
+        <input type="text" id="node-input-cvalue">
+    </div>
+    <div class="form-row">
+        <label for="node-input-tol"><i class="icon-tag"></i> tolerance </label>
+        <input type="text" id="node-input-tol">
+    </div>
+    <div class="form-row">
+        <label for="node-input-alphatol"><i class="icon-tag"></i> alpha tolerance </label>
+        <input type="text" id="node-input-alphatol">
+    </div>
+    <div class="form-row">
+        <label for="node-input-maxpasses"><i class="icon-tag"></i> max_passes </label>
+        <input type="text" id="node-input-maxpasses">
+    </div>
+
+    <div class="form-row">
+        <label for=""><i class="icon-tag"></i> Kernel </label>
+        <select id="kernel-type-select" style="width: 73%">
+            <option value="linear" > linear </option>
+            <option value="gaussian" > gaussian </option>
+            <option value="polynomial" > polynomial </option>
+            <option value="custom" >custom function </option>
+        </select>
+        <input type="hidden" id="node-input-kernelType">
+    </div>
+
+    <div class="form-row kernel-row hidden" id="kernel-row-gaussian">
+        <label for="node-input-sigma"><i class="icon-bookmark"></i> sigma </label>
+        <input type="text" id="node-input-sigma">
+    </div>
+
+    <div class="form-row kernel-row hidden" id="kernel-row-polynomial">
+        <label for="node-input-cc"><i class="icon-bookmark"></i> c </label>
+        <input type="text" id="node-input-cc" style="width: 85px">
+        <label for="node-input-dd" style="margin-left: 20px;" ><i class="icon-bookmark"></i> d </label>
+        <input type="text" id="node-input-dd" style="width: 85px">
+    </div>
+
+    <div class="form-row kernel-row hidden" style="margin-bottom: 0px;" id="kernel-row-custom">
+        <label for="node-input-func"><i class="fa fa-wrench"></i> <span data-i18n="function.label.function"></span></label>
+        <input type="hidden" id="node-input-func" autofocus="autofocus">
+        <input type="hidden" id="node-input-noerr">
+    <div class="form-row node-text-editor-row">
+        <div style="height: 100px;" class="node-text-editor" id="node-input-editor" ></div>
+    </div>
+    </div>
+
+
+
+
+</script>

@@ -1,0 +1,27 @@
+<script type="text/javascript">
+    RED.nodes.registerType('zmq-broker',{
+        category: 'config',
+        defaults: {
+            host: {value:"192.168.30.9",required:true},
+            port: {value:5555,required:true,validate:RED.validators.number()}
+        },
+        label: function() {
+            if (this.host == "") { this.host = "192.168.30.9"; }
+            return this.host+":"+this.port;
+        },
+        oneditprepare: function () {
+
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="zmq-broker">
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="icon-bookmark"></i> Host</label>
+        <input type="text" id="node-config-input-host">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-port"><i class="icon-bookmark"></i> Port</label>
+        <input type="text" id="node-config-input-port">
+    </div>
+</script>

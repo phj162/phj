@@ -1,0 +1,155 @@
+<script type="text/javascript">
+    RED.nodes.registerType('full-text', {
+        category: 'data processing',
+        color: '#ccc',
+        defaults: {
+            name: {value: ''},
+            rules: {value: [{key: "", lenStart: 0, lenEnd: 0}]}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'alert.png',
+        label: function () {
+            return this.name || 'full-text';
+        },
+        oneditprepare: function () {
+            var rules = this.rules;
+            if (rules != undefined) {
+                $('.node-input-content').html('');
+                $.each(rules, function (i, v) {
+                    editKeySet(v);
+                });
+            }
+        },
+        oneditsave: function () {
+            var rules = $('.key_wrap');
+            var node = this;
+            node.rules = [];
+            $.each(rules, function (i, v) {
+                var tmpKeySet = {
+                    key: $(v).find('.key_set_key').val(),
+                    lenStart: $(v).find('.key_set_len_start').val(),
+                    lenEnd: $(v).find('.key_set_len_end').val()
+                }
+
+                node.rules.push(tmpKeySet);
+            });
+        }
+    });
+
+    $(function () {
+        $(document).on('click', '#node-input-add-rule', addKeySet);
+        $(document).on('click', '.key_wrap .editor-button-small', removeKeySet);
+    });
+
+    function addKeySet() {
+        var rHtml = '<div class="key_wrap">';
+        rHtml += '<input type="text" class="key_set_key" />';
+        rHtml += '<input type="text" class="key_set_len_start"/>';
+        rHtml += '<input type="text" class="key_set_len_end"/>';
+        rHtml += '<a href="#" class="editor-button editor-button-small" style="margin-top: 7px; margin-left: 5px;"><i class="fa fa-remove"></i></a>';
+        rHtml += '</div>';
+
+        $('.node-input-content').append(rHtml);
+    }
+
+    function editKeySet(v) {
+        var rHtml = '<div class="key_wrap">';
+        rHtml += '<input type="text" class="key_set_key" value="' + v.key + '" />';
+        rHtml += '<input type="text" class="key_set_len_start" value="' + v.lenStart + '" />';
+        rHtml += '<input type="text" class="key_set_len_end" value="' + v.lenEnd + '" />';
+        rHtml += '<a href="#" class="editor-button editor-button-small" style="margin-top: 7px; margin-left: 5px;"><i class="fa fa-remove"></i></a>';
+        rHtml += '</div>';
+
+        $('.node-input-content').append(rHtml);
+    }
+
+    function removeKeySet() {
+        $(this).parent().remove();
+    }
+</script>
+
+<script type="text/x-red" data-template-name="full-text">
+    <div class="form-row">
+        <div class="node-input-title">
+            <div>Key</div>
+            <div>Start Index</div>
+            <div>End Index</div>
+        </div>
+        <div class="node-input-content">
+            <div class="key_wrap">
+                <input type="text" class="key_set_key" />
+                <input type="text" class="key_set_len_start"/>
+                <input type="text" class="key_set_len_end"/>
+                <a href="#" class="editor-button editor-button-small" style="margin-top: 7px; margin-left: 5px;"><i class="fa fa-remove"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <a role="button" class="editor-button editor-button-small" id="node-input-add-rule">
+            <i class="fa fa-plus"></i> <span data-i18n="node-red:switch.label.rule">rule</span>
+        </a>
+    </div>
+</script>
+
+<style>
+    .form-row:after {
+        content: "";
+        clear: both;
+        display: block;
+    }
+
+    #node-input-add-rule {
+        margin-top: 4px;
+        float: right;
+    }
+
+    .node-input-title {
+        text-align: center;
+        padding: 5px;
+    }
+
+    .node-input-title:after {
+        content: "";
+        clear: both;
+        display: block;
+    }
+
+    .node-input-title div {
+        float: left;
+        width: 21%;
+        margin-right: 5px;
+    }
+
+    .node-input-title div:nth-child(1) {
+        width: 41%;
+    }
+
+    .node-input-content {
+        border: 1px solid #ccc;
+        height: 350px;
+        overflow-y: scroll;
+    }
+
+    .key_wrap {
+        padding: 5px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .key_wrap:after {
+        content: "";
+        clear: both;
+        display: block;
+    }
+
+    .key_wrap input {
+        float: left;
+        width: 20%;
+        margin-right: 5px;
+    }
+
+    .key_wrap input:nth-child(1) {
+        width: 40%;
+    }
+
+</style>

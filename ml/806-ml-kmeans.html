@@ -1,0 +1,83 @@
+<script type="text/javascript">
+    RED.nodes.registerType('ml-kmeans', {
+        category: 'machineLeaning',
+        color: '#cfcfcf',
+        defaults: {
+            name: {value: ""},
+            kvalue : {value:"4"},
+            epochs: {value:"100"},
+            disType:{value:"euclidean"},
+            func: {value:"\nreturn msg;"}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'file.png',
+        label: function () {
+            return this.name || 'ml-kmeans';
+        },
+        oneditprepare: function() {
+            $("#distance-type-select").change(function() {
+                var id = $("#distance-type-select option:selected").val();
+                $(".distance-row").hide();
+                $("#distance-row-"+id).show();
+                $("#node-input-disType").val(id);
+
+            });
+
+            $(".distance-row").hide();
+            var id = this.disType;
+            $("#distance-type-select option").filter(function() {return $(this).val() == id;}).attr('selected',true);
+            $("#distance-row-"+id).show();
+
+            this.editor = RED.editor.createEditor({
+                id: 'node-input-editor',
+                mode: 'ace/mode/javascript',
+                value: $("#node-input-func").val()
+            });
+
+        },
+        oneditsave: function() {
+
+            $("#node-input-func").val(this.editor.getValue());
+
+        }
+    });
+
+</script>
+
+
+
+<script type="text/x-red" data-template-name="ml-kmeans">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-kvalue"><i class="icon-tag"></i> K </label>
+        <input type="text" id="node-input-kvalue">
+    </div>
+    <div class="form-row">
+        <label for="node-input-epochs"><i class="icon-tag"></i> epochs </label>
+        <input type="text" id="node-input-epochs">
+    </div>
+
+    <div class="form-row">
+        <label for=""><i class="icon-tag"></i> Kernel </label>
+        <select id="distance-type-select" style="width: 73%">
+            <option value="euclidean" > euclidean </option>
+            <option value="pearson" > pearson </option>
+            <option value="custom" >custom function </option>
+        </select>
+        <input type="hidden" id="node-input-disType">
+    </div>
+
+    <div class="form-row distance-row hidden" style="margin-bottom: 0px;" id="distance-row-custom">
+        <label for="node-input-func"><i class="fa fa-wrench"></i> <span data-i18n="function.label.function"></span></label>
+        <input type="hidden" id="node-input-func" autofocus="autofocus">
+        <input type="hidden" id="node-input-noerr">
+    <div class="form-row node-text-editor-row">
+        <div style="height: 100px;" class="node-text-editor" id="node-input-editor" ></div>
+    </div>
+
+</script>

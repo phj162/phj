@@ -1,0 +1,73 @@
+<script type="text/javascript">
+    RED.nodes.registerType('traffic-control', {
+        category: 'data processing',
+        color: '#ccc',
+        defaults: {
+            name: {value: ''},
+            trafficType: {value: ''},
+            trafficTypeValue: {value: 0}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'alert.png',
+        label: function () {
+            return this.name || 'traffic-control';
+        },
+        oneditprepare: function () {
+            var typeVal = this.trafficType;
+            if (typeVal != '') {
+                var typeTxt = '';
+                if (typeVal == 'mlc') {
+                    typeTxt = 'Message Limit Count';
+                } else if (typeVal == 'mit') {
+                    typeTxt = 'Message Inteval Time';
+                }
+
+                var rHtml = '';
+                rHtml += '<label for="node-input-traffic-value"><i class="fa fa-tag"></i>' + typeTxt.replace('Message', '') + '</label>';
+                rHtml += '<input type="text" id="node-input-traffic-value" style="margin-left:5px;">';
+
+                $('#traffic-value-wrap').html(rHtml);
+
+                $('#node-input-traffic-type').val(this.trafficType);
+                $('#node-input-traffic-value').val(this.trafficTypeValue);
+            }
+        },
+        oneditsave: function () {
+            var node = this;
+
+            node.trafficType = $('#node-input-traffic-type').val();
+            node.trafficTypeValue = $('#node-input-traffic-value').val();
+        }
+    });
+
+    $(function () {
+        $(document).on('change', '#node-input-traffic-type', changeTrafficType);
+    });
+
+    function changeTrafficType() {
+        var rHtml = '';
+        var typeVal = $(this).val();
+        var typeTxt = $('#' + $(this).attr('id') + ' option:selected').text();
+
+        if (typeVal != '') {
+            rHtml += '<label for="node-input-traffic-value"><i class="fa fa-tag"></i>' + typeTxt.replace('Message', '') + '</label>';
+            rHtml += '<input type="text" id="node-input-traffic-value" style="margin-left:5px;">';
+        }
+
+        $('#traffic-value-wrap').html(rHtml);
+    }
+
+</script>
+
+<script type="text/x-red" data-template-name="traffic-control">
+    <div class="form-row">
+        <label for="node-input-traffic-type"><i class="fa fa-tag"></i>Type</label>
+        <select id="node-input-traffic-type" style="width:73%">
+            <option value="">==Traffic Type==</option>
+            <option value="mlc">Message Limit Count</option>
+            <option value="mit">Message Inteval Time</option>
+        </select>
+    </div>
+    <div class="form-row" id="traffic-value-wrap"></div>
+</script>

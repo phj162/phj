@@ -1,0 +1,139 @@
+<script type="text/javascript">
+    RED.nodes.registerType('ml-knn', {
+        category: 'machineLeaning',
+        color: '#cfcfcf',
+        defaults: {
+            name: {value: ""},
+            kvalue : {value:"3"},
+            kernelType:{value:"none"},
+            sigma:{value:"10.0"},
+            func: {value:"\nreturn msg;"},
+            disType:{value:"gaussian"},
+            funcD: {value:"\nreturn msg;"}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'file.png',
+        label: function () {
+            return this.name || 'ml-knn';
+        },
+        oneditprepare: function() {
+            $("#kernel-type-select").change(function() {
+                var id = $("#kernel-type-select option:selected").val();
+                $(".kernel-row").hide();
+                $("#kernel-row-"+id).show();
+                $("#node-input-kernelType").val(id);
+
+            });
+
+            $(".kernel-row").hide();
+            var id = this.kernelType;
+            $("#kernel-type-select option").filter(function() {return $(this).val() == id;}).attr('selected',true);
+            $("#kernel-row-"+id).show();
+
+            $("#distance-type-select").change(function() {
+                var id = $("#distance-type-select option:selected").val();
+                $(".distance-row").hide();
+                $("#distance-row-"+id).show();
+                $("#node-input-disType").val(id);
+
+            });
+
+            $(".distance-row").hide();
+            var disid = this.kernelType;
+            $("#distance-type-select option").filter(function() {return $(this).val() == disid;}).attr('selected',true);
+            $("#distance-row-"+disid).show();
+
+
+            this.editor = RED.editor.createEditor({
+                id: 'node-input-editor',
+                mode: 'ace/mode/javascript',
+                value: $("#node-input-func").val()
+            });
+
+            this.editor = RED.editor.createEditor({
+                id: 'node-input-editorD',
+                mode: 'ace/mode/javascript',
+                value: $("#node-input-funcD").val()
+            });
+
+
+        },
+        oneditsave: function() {
+
+            $("#node-input-func").val(this.editor.getValue());
+            $("#node-input-funcD").val(this.editor.getValue());
+
+        }
+
+
+    });
+
+
+
+</script>
+
+<style>
+    .kernel-row {
+        padding-left: 0px;
+    }
+
+    .distance-row {
+        padding-left: 0px;
+    }
+</style>
+
+<script type="text/x-red" data-template-name="ml-knn">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-kvalue"><i class="icon-tag"></i> k </label>
+        <input type="text" id="node-input-kvalue">
+    </div>
+
+
+    <div class="form-row">
+        <label for=""><i class="icon-tag"></i> Kernel </label>
+        <select id="kernel-type-select" style="width: 73%">
+            <option value="none" > None </option>
+            <option value="gaussian" > gaussian </option>
+            <option value="custom" >custom function </option>
+        </select>
+        <input type="hidden" id="node-input-kernelType">
+    </div>
+
+    <div class="form-row kernel-row hidden" id="kernel-row-gaussian">
+        <label for="node-input-sigma"><i class="icon-bookmark"></i> sigma </label>
+        <input type="text" id="node-input-sigma">
+    </div>
+
+    <div class="form-row kernel-row hidden" style="margin-bottom: 0px;" id="kernel-row-custom">
+        <label for="node-input-func"><i class="fa fa-wrench"></i> <span data-i18n="function.label.function"></span></label>
+        <input type="hidden" id="node-input-func" autofocus="autofocus">
+        <input type="hidden" id="node-input-noerr">
+    <div class="form-row node-text-editor-row">
+        <div style="height: 100px;" class="node-text-editor" id="node-input-editor" ></div>
+    </div>
+    </div>
+
+    <div class="form-row">
+        <label for=""><i class="icon-tag"></i> Distance </label>
+        <select id="distance-type-select" style="width: 73%">
+            <option value="euclidean" > euclidean </option>
+            <option value="custom" >custom function </option>
+        </select>
+        <input type="hidden" id="node-input-disType">
+    </div>
+
+    <div class="form-row distance-row hidden" style="margin-bottom: 0px;" id="distance-row-custom">
+        <label for="node-input-funcD"><i class="fa fa-wrench"></i> <span data-i18n="function.label.function"></span></label>
+        <input type="hidden" id="node-input-funcD" autofocus="autofocus">
+        <div class="form-row node-text-editor-row">
+            <div style="height: 100px;" class="node-text-editor" id="node-input-editorD" ></div>
+        </div>
+    </div>
+
+</script>

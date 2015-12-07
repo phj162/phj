@@ -1,0 +1,77 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tsg-sun-fsk', {
+        category: 'T_SmartGateway',
+        color: '#cfcfcf',
+        defaults: {
+            name: {value: ""},
+            interval: {value:"1000", required:true, validate:RED.validators.number()},
+            zmqBroker: {type:"zmq-broker", required:true}
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: 'bridge.png',
+        label: function () {
+            return this.name || 'tsg-sun-fsk';
+        },
+        oneditprepare: function() {
+            var node = this;
+
+
+            if(node.appId == null || node.appId === '' ) {
+                $.getJSON('tsg-sun-fsk/' + this.id, function (resData) {
+                    if (resData != null) {
+                        $('#node-label-appId').text(resData.appId);
+                    }
+                });
+            }
+//            $('#node-input-appId').val(node.appId);
+//
+//            $("#node-input-clear-appId").click(function() {
+//                $('#node-input-appId').val("");
+//            });
+
+
+        },
+        oneditsave: function() {
+
+        },
+        onpaletteadd: function() {
+
+//            var node = this;
+//
+//            this.handleMessage = function(t,o){
+//                node.defaults.appId.value = o.appId;
+//
+//            }
+//
+//            RED.comms.subscribe("tsg-sun-fsk",this.handleMessage);
+        },
+        onpaletteremove: function() {
+//            RED.comms.unsubscribe("tsg-sun-fsk",this.handleMessage);
+        }
+    });
+
+
+</script>
+
+<script type="text/x-red" data-template-name="tsg-sun-fsk">
+    <div class="form-row">
+        <label><i class="fa fa-globe"></i> <span>AppID</span></label>
+        <label><span id="node-label-appId">NONE</span></label>
+        <!--<input type="text" id="node-input-appId" readonly style="width:50%">-->
+        <!--<a href="#" class="editor-button" id="node-input-clear-appId"><i class="fa fa-minus"></i> Clear</a>-->
+    </div>
+    <div class="form-row">
+        <label for="node-input-zmqBroker"><i class="fa fa-globe"></i> <span>Server</span></label>
+        <input type="text" id="node-input-zmqBroker">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-host"><i class="icon-bookmark"></i> Interval(ms)</label>
+        <input type="text" id="node-input-interval">
+    </div>
+</script>
+

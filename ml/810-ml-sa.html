@@ -1,0 +1,82 @@
+<script type="text/javascript">
+    RED.nodes.registerType('ml-sa', {
+        category: 'machineLeaning',
+        color: '#cfcfcf',
+        defaults: {
+            name: {value: ""},
+            vlength : {value:"15"},
+            dmin : {value:"1"},
+            dmax : {value:"100"},
+            temperature : {value:"100000.0"},
+            cool : {value:"0.999"},
+            step : {value:"4"},
+            func: {value:""}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'file.png',
+        label: function () {
+            return this.name || 'ml-sa';
+        },
+        oneditprepare: function() {
+            this.editor = RED.editor.createEditor({
+                id: 'node-input-editor',
+                mode: 'ace/mode/javascript',
+                value: $("#node-input-func").val()
+            });
+
+        },
+        oneditsave: function() {
+
+            $("#node-input-func").val(this.editor.getValue());
+
+        }
+    });
+
+</script>
+
+<script type="text/x-red" data-template-name="ml-sa">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-vlength" style="width: 130px;"><i class="icon-tag"></i> Vector Length </label>
+        <input type="text" style="width: 285px;" id="node-input-vlength">
+    </div>
+    <div class="form-row">
+        <label for="node-input-dmin"><i class="icon-tag"></i> Domain Min </label>
+        <input type="text" id="node-input-dmin">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-dmax"><i class="icon-tag"></i> Domain Max </label>
+        <input type="text" id="node-input-dmax">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-temperature"><i class="icon-tag"></i> Temperature </label>
+        <input type="text" id="node-input-temperature">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-cool"><i class="icon-tag"></i> cool </label>
+        <input type="text" id="node-input-cool">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-step"><i class="icon-tag"></i> step </label>
+        <input type="text" id="node-input-step">
+    </div>
+
+    <div class="form-row" style="margin-bottom: 0px;">
+        <label for="node-input-func"><i class="fa fa-wrench"></i> <span data-i18n="function.label.function"></span></label>
+        <input type="hidden" id="node-input-func" autofocus="autofocus">
+        <input type="hidden" id="node-input-noerr">
+    <div class="form-row node-text-editor-row">
+        <div style="height: 100px;" class="node-text-editor" id="node-input-editor" ></div>
+    </div>
+
+
+</script>

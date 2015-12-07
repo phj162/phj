@@ -1,0 +1,43 @@
+<script type="text/javascript">
+    RED.nodes.registerType('standard-rules', {
+        category: 'data processing',
+        color: '#ccc',
+        defaults: {
+            name: {value: ''},
+            fileName: {value: ''},
+            outputs: {value: 0}
+        },
+        inputs: 1,
+        outputs: 0,
+        icon: 'alert.png',
+        label: function () {
+            return this.name || 'Standard Rules';
+        },
+        oneditsave: function () {
+            var node = this;
+
+            if ($.trim($('#node-input-fileName').val()) != '') {
+                $.ajax({
+                    url: 'standardRules/' + $.trim($('#node-input-fileName').val()),
+                    async: false,
+                    type: 'POST',
+                    success: function (r) {
+                        if (r.result) {
+                            node.outputs = r.value;
+                        }
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="standard-rules">
+    <div class="standard_rules">
+        <div class="form-row">
+            <label for="node-input-fileName"><i class="fa fa-tag"></i> File Name</label>
+            <input type="text" id="node-input-fileName" />
+        </div>
+    </div>
+
+</script>

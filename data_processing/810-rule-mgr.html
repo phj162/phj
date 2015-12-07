@@ -1,0 +1,121 @@
+<script type="text/javascript">
+    RED.nodes.registerType('rule-mgr',{
+        category: 'data_processing',
+        color:"#E6E0F8",
+        defaults: {
+            name: {value:""}
+            // rulefileaction: {type:"rulefile", required:true}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "arrow-in.png",
+        label: function() {
+            return this.name||"rule-mgr";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+
+        oneditprepare: function () {
+            var node = this;
+
+            $.ajax({
+                url: 'rulesmgr/getfiles',
+                type: 'POST',
+                success: function (r) {
+
+                    if (r.result) {
+                        var filenameArray = r.filelist;
+                        var rHtml = '<option value="">==Create Rules ==</option>';
+                        $.each(filenameArray, function (i, v) {
+                            rHtml += '<option value="' + v + '">' + v + '</option>';
+                        });
+
+                       $('#node-input-rulefileselect').html(rHtml);
+
+                    }
+
+                }
+            });
+
+            $("#node-input-rulefileselect").change(function() {
+                var fileName = $("#node-input-rulefileselect option:selected").val();
+                $("#node-input-rulefileaction").val(fileName);
+
+                if(fileName == ''){
+                    $("#node-rule-content").val("");
+                }else{
+                    $.ajax({
+                        url: 'rules/' + $.trim(fileName),
+                        type: 'POST',
+                        success: function (r) {
+                            if (r.result) {
+                                $("#node-rule-content").val(JSON.stringify(r.value));
+
+                            }
+                        }
+                    });
+                }
+            });
+
+        }
+    });
+</script>
+
+<style>
+    .rule-textarea {
+        width: 430px;
+        height : 150px;
+    }
+
+    .rule-filename {
+        width: 340px;
+    }
+
+    #node-input-rulefileaction{
+        width:250px;
+    }
+
+    #node-input-rule-file-del{
+        margin-left: 20px;
+    }
+
+</style>
+
+<script type="text/x-red" data-template-name="rule-mgr">
+
+    <div class="form-row">
+        <label for="node-input-rulefileselect"><i class="fa fa-tag"></i> Rules files</label>
+        <select id="node-input-rulefileselect">
+            <option value="">== Rules ==</option>
+        </select>
+        <a id="node-input-rule-file-del" class="button"><i class="fa fa-trash"></i></a>
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-rulefileaction"><i class="fa fa-globe"></i> File Name</label>
+        <input type="text" id="node-input-rulefileaction" class="rule-filename"/>
+        <a id="node-input-rule-file-save" class="button"><i class="fa fa-plus"></i>add rule</a>
+    </div>
+
+     <div class="form-row rule-create-content">
+        <label for="rule_create_set_name"><i class="fa fa-tag"></i> Rule Name</label>
+        <input type="text" class="rule_set_name" id="rule_create_set_name" />
+        <label for="rule_create_set_property"><i class="fa fa-tag"></i> Rule property</label>
+        <input type="text" class="rule_set_property" id="rule_create_set_property"/>
+        <a href="#" class="editor-button editor-button-small" style="margin-top: 7px; margin-left: 5px;"><i class="fa fa-remove"></i></a>
+
+     </div>
+
+    <div>
+        <label for="node-rule-content"><i class="fa fa-tag"></i> Rule Content</label>
+        <textarea id="node-rule-content" class="rule-textarea" ></textarea>
+    </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="rule-mgr">
+    <p>Rule File Management </p>
+</script>
+
+
